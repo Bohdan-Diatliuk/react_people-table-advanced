@@ -17,8 +17,7 @@ export const PeopleTable = ({ people }: PeopleProps) => {
 
   const sex = searchParams.get('sex');
   const query = searchParams.get('query') || '';
-  const centuriesParam = searchParams.get('centuries');
-  const centuries = centuriesParam ? centuriesParam.split(',') : [];
+  const centuries = searchParams.getAll('centuries');
   const sortField = searchParams.get('sort') as SortField | null;
   const sortOrder = searchParams.get('order') === 'desc' ? 'desc' : 'asc';
 
@@ -206,7 +205,10 @@ export const PeopleTable = ({ people }: PeopleProps) => {
                 {person.motherName ? (
                   mother ? (
                     <Link
-                      to={`/people/${mother.slug}`}
+                      to={{
+                        pathname: `/people/${mother.slug}`,
+                        search: getSearchWith(searchParams, {}),
+                      }}
                       className="has-text-danger"
                     >
                       {person.motherName}
@@ -222,7 +224,12 @@ export const PeopleTable = ({ people }: PeopleProps) => {
               <td>
                 {person.fatherName ? (
                   father ? (
-                    <Link to={`/people/${father.slug}`}>
+                    <Link
+                      to={{
+                        pathname: `/people/${father.slug}`,
+                        search: getSearchWith(searchParams, {}),
+                      }}
+                    >
                       {person.fatherName}
                     </Link>
                   ) : (
