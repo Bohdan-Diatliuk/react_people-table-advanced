@@ -1,6 +1,7 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Person } from '../types';
 import cn from 'classnames';
+import { getSearchWith } from '../utils/searchHelper';
 
 type PeopleProps = {
   people: Person[];
@@ -8,6 +9,7 @@ type PeopleProps = {
 
 export const PersonFilter = ({ people }: PeopleProps) => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
 
   return (
     <>
@@ -24,7 +26,10 @@ export const PersonFilter = ({ people }: PeopleProps) => {
           >
             <td>
               <Link
-                to={`/people/${person.slug}`}
+                to={{
+                  pathname: `/people/${person.slug}`,
+                  search: getSearchWith(searchParams, {}),
+                }}
                 className={cn({
                   'has-text-danger': person.sex === 'f',
                 })}
@@ -39,7 +44,10 @@ export const PersonFilter = ({ people }: PeopleProps) => {
               {person.motherName ? (
                 person.mother ? (
                   <Link
-                    to={`/people/${person.mother.slug}`}
+                    to={{
+                      pathname: `/people/${person.mother.slug}`,
+                      search: getSearchWith(searchParams, {}),
+                    }}
                     className="has-text-danger"
                   >
                     {person.motherName}
@@ -54,7 +62,12 @@ export const PersonFilter = ({ people }: PeopleProps) => {
             <td>
               {person.fatherName ? (
                 person.father ? (
-                  <Link to={`/people/${person.father.slug}`}>
+                  <Link
+                    to={{
+                      pathname: `/people/${person.father.slug}`,
+                      search: getSearchWith(searchParams, {}),
+                    }}
+                  >
                     {person.fatherName}
                   </Link>
                 ) : (
