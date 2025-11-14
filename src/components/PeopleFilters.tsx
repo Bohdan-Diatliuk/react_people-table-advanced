@@ -7,8 +7,7 @@ export const PeopleFilters = () => {
 
   const sex = searchParams.get('sex') || null;
   const query = searchParams.get('query') || '';
-  const centuriesParam = searchParams.get('centuries');
-  const centuries = centuriesParam ? centuriesParam.split(',') : [];
+  const centuries = searchParams.getAll('centuries');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newParams = new URLSearchParams(searchParams);
@@ -24,19 +23,19 @@ export const PeopleFilters = () => {
   };
 
   const getCenturyParams = (century: string) => {
-    const currentCenturies = centuriesParam ? centuriesParam.split(',') : [];
+    const currentCenturies = searchParams.getAll('centuries');
 
     if (currentCenturies.includes(century)) {
-      const updated = currentCenturies.filter(c => c !== century);
+      const updated = currentCenturies.filter(current => current !== century);
 
       return {
-        centuries: updated.length > 0 ? updated.join(',') : null,
+        centuries: updated.length > 0 ? updated : null,
       };
     } else {
       const updated = [...currentCenturies, century].sort();
 
       return {
-        centuries: updated.join(','),
+        centuries: updated,
       };
     }
   };

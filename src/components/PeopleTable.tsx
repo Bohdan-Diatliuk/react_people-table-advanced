@@ -3,6 +3,7 @@ import { useSearchParams, Link, useParams } from 'react-router-dom';
 import { SearchLink } from './SearchLink';
 import { Person } from '../types';
 import cn from 'classnames';
+import { getSearchWith } from '../utils/searchHelper';
 
 type PeopleProps = {
   people: Person[];
@@ -32,8 +33,19 @@ export const PeopleTable = ({ people }: PeopleProps) => {
         return false;
       }
 
-      if (query && !person.name.toLowerCase().includes(query.toLowerCase())) {
-        return false;
+      if (query) {
+        const searchQuery = query.toLowerCase();
+        const matchesName = person.name.toLowerCase().includes(searchQuery);
+        const matchesMother = person.motherName
+          ?.toLowerCase()
+          .includes(searchQuery);
+        const matchesFather = person.fatherName
+          ?.toLowerCase()
+          .includes(searchQuery);
+
+        if (!matchesName && !matchesMother && !matchesFather) {
+          return false;
+        }
       }
 
       if (centuries.length > 0) {
@@ -176,7 +188,10 @@ export const PeopleTable = ({ people }: PeopleProps) => {
             >
               <td>
                 <Link
-                  to={`/people/${person.slug}`}
+                  to={{
+                    pathname: `/people/${person.slug}`,
+                    search: getSearchWith(searchParams, {}),
+                  }}
                   className={cn({ 'has-text-danger': person.sex === 'f' })}
                 >
                   {person.name}
